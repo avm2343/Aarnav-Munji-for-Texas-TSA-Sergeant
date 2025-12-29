@@ -176,7 +176,7 @@
             width: auto;         /* Allow width to adjust */
             height: auto;        /* Allow height to adjust */
             max-height: 75vh;    /* Keep it within 75% of the screen height */
-            max-width: 90vw;     /* Ensure it doesn't get wider than the phone screen */
+            max-width: 150vw;     /* Ensure it doesn't get wider than the phone screen */
             object-fit: contain; /* Extra insurance to keep proportions */
             filter: drop-shadow(15px 15px 0px var(--accent-blue)); 
         }
@@ -478,6 +478,10 @@
             justify-content: center;
             width: 100%; /* Ensure the container stays within bounds */
             overflow: hidden; /* Clips any shadow that might peek off-screen */
+        }
+
+        .hero-img {
+            max-width: 90vw;
         }
 
         /* 5. Center the Titles and Underlines */
