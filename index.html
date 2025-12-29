@@ -173,12 +173,13 @@
         }
         
         .hero-img {
-            height: 100%;
-            width: auto;
-            /* This filter creates the blue shadow behind the cutout */
-            filter: drop-shadow(-15px 0px 0px var(--accent-blue)); 
+            width: auto;         /* Allow width to adjust */
+            height: auto;        /* Allow height to adjust */
+            max-height: 75vh;    /* Keep it within 75% of the screen height */
+            max-width: 90vw;     /* Ensure it doesn't get wider than the phone screen */
+            object-fit: contain; /* Extra insurance to keep proportions */
+            filter: drop-shadow(15px 15px 0px var(--accent-blue)); 
         }
-
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-50px); }
             to { opacity: 1; transform: translateY(0); }
@@ -467,8 +468,16 @@
 
         /* 4. Fix the Hero Image */
         .hero-image-container {
-            height: 100vh; /* Shrink person so they don't cover text */
-            top: 60%;
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%; /* Ensure the container stays within bounds */
+            overflow: hidden; /* Clips any shadow that might peek off-screen */
         }
 
         /* 5. Center the Titles and Underlines */
