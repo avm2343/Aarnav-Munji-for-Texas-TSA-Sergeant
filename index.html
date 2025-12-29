@@ -11,6 +11,13 @@
     <link rel="stylesheet" href="https://use.typekit.net/mpq5pws.css">
 
     <style>
+        html, body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* This kills the horizontal scroll */
+            position: relative;
+        }
         :root {
             --bg-dark: #02051a; /* Deep Navy Background */
             --accent-blue: #2d8cf0; /* Bright TSA Blue */
@@ -396,6 +403,25 @@
 
         /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
+            * {
+                max-width: 100vw; /* Ensures no element can be wider than the phone */
+            }
+
+            .hero-content h1 {
+                word-wrap: break-word; /* Prevents long names from pushing the edge */
+                font-size: 3rem; 
+            }
+
+            .section-title {
+                max-width: 90%; /* Keeps titles from hitting the edge */
+            }
+            .section-title::after {
+                width: 100%;
+                left: 0;
+            }
+            .polaroid-stack {
+                transform: scale(0.8); /* Shrinks the photos so they don't overflow */
+            }
             #about, .grid-2, .contact-content {
                 grid-template-columns: 1fr;
                 flex-direction: column;
