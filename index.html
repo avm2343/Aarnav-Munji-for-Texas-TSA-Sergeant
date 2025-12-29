@@ -115,17 +115,52 @@
         opacity: 0.8;
     }
 
+    /* --- HOME / HERO SECTION FIXED --- */
+    /* 1. The Name Animation (Fades in + scales up slightly) */
+    /* 1. The Name Fix (Locks size and thickness) */
+    .hero-content h1 {
+        font-family: var(--font-title);
+        font-size: 6rem; /* Ensures size stays locked */
+        font-weight: 700; /* Forces the thickness to stay bold */
+        line-height: 1;
+        letter-spacing: -2px;
+        margin-bottom: 10px;
+        
+        /* Animation settings */
+        opacity: 0;
+        animation: nameEntrance 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation-delay: 0.2s;
+
+        /* These 3 lines prevent font 'warping' or thinning during animation */
+        -webkit-font-smoothing: antialiased;
+        backface-visibility: hidden;
+        transform: translateZ(0); 
+    }
+
+    @keyframes nameEntrance {
+        from { 
+            opacity: 0; 
+            /* Use a very tiny scale change so it doesn't distort the pixels */
+            transform: scale(0.98) translateY(10px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: scale(1) translateY(0); 
+        }
+    }
+
+    /* 2. The Scroll Reveal Fix (Ensures elements don't 'jump' on mobile) */
     .reveal {
         opacity: 0;
-        transform: translateY(30px);
-        transition: all 0.8s ease-out;
+        transform: translateY(20px); /* Reduced distance for a smoother 'pop' */
+        transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        backface-visibility: hidden;
     }
+
     .reveal.active {
         opacity: 1;
         transform: translateY(0);
     }
-
-    /* --- HOME / HERO SECTION FIXED --- */
     #home {
         justify-content: center;
         text-align: center;
@@ -135,15 +170,6 @@
     .hero-content {
         position: relative;
         z-index: 2;
-    }
-
-    .hero-content h1 {
-        font-family: var(--font-title);
-        font-size: 6rem;
-        line-height: 1;
-        font-weight: 700;
-        letter-spacing: -2px;
-        margin-bottom: 10px;
     }
 
     .hero-subtitle {
@@ -261,13 +287,24 @@
     .magic-card li { margin-bottom: 15px; font-size: 1.1rem; list-style: none; }
 
     .btn-resume {
-        margin-top: 50px;
-        background: var(--accent-blue);
-        color: white;
-        padding: 15px 40px;
-        border-radius: 30px;
-        text-decoration: none;
-        font-weight: bold;
+    margin-top: 50px;
+    background: var(--accent-blue);
+    color: white;
+    padding: 15px 40px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block; /* Essential for transform to work */
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+
+    .btn-resume:hover {
+        transform: translateY(-8px); /* Rises up */
+        box-shadow: 0 12px 20px rgba(45, 140, 240, 0.4); /* Adds depth */
+    }
+
+    .btn-resume:active {
+        transform: translateY(-2px); /* Slight 'click' feel */
     }
 
     /* --- CONTACT --- */
@@ -508,17 +545,22 @@
         });
 
         // --- 2. SCROLL REVEAL ANIMATIONS ---
+        const observerOptions = {
+            threshold: 0.1, // Triggers when 10% of the section is visible
+            rootMargin: "0px 0px -50px 0px" // Triggers slightly before the element hits the view
+        };
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('active');
                 }
             });
-        }, { threshold: 0.1 });
+        }, observerOptions);
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        // --- 3. 3D TILT CARD EFFECT ---
+       // --- 3. 3D TILT CARD EFFECT (High Movement) ---
         const cards = document.querySelectorAll('.magic-card');
 
         cards.forEach(card => {
@@ -530,17 +572,25 @@
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
                 
-                const rotateX = ((y - centerY) / centerY) * -5;
-                const rotateY = ((x - centerX) / centerX) * 5; 
+                // Increased from 5 to 15 for a more dramatic tilt
+                const rotateX = ((y - centerY) / centerY) * -10; 
+                const rotateY = ((x - centerX) / centerX) * 10; 
                 
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
 
                 card.style.setProperty('--mouse-x', `${x}px`);
                 card.style.setProperty('--mouse-y', `${y}px`);
             });
 
             card.addEventListener('mouseleave', () => {
-                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+                // Smooth return to original state
+                card.style.transition = "transform 0.5s ease";
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+            });
+            
+            card.addEventListener('mouseenter', () => {
+                // Remove transition on enter so the mouse tracking is instant
+                card.style.transition = "none";
             });
         });
     </script>
